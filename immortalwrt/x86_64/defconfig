@@ -130,3 +130,9 @@ CONFIG_PACKAGE_luci-app-socat=y
 # ===== Hardware =====
 CONFIG_PACKAGE_lm-sensors=y
 CONFIG_PACKAGE_luci-app-lm-sensors=y
+# ===== ESXi 直通网卡驱动 =====
+CONFIG_PACKAGE_kmod-ixgbe=y      # 核心：支持 X550 物理直通
+CONFIG_PACKAGE_kmod-igc=y        # 备用：支持 I225/I226 直通
+CONFIG_PACKAGE_kmod-vmxnet3=y    # 必备：万一你想改回虚拟网卡，这个效率最高
+# ===== 虚拟化增强 (可以让 ESXi 看到虚拟机的状态) =====
+CONFIG_PACKAGE_open-vm-tools=y

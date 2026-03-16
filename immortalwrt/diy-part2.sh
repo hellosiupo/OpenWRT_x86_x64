@@ -40,3 +40,5 @@ EOF
 # 针对 eth0 和 eth1 进行加固
 sed -i '/exit 0/i ip link set dev eth0 txqueuelen 10000' package/base-files/files/etc/rc.local
 sed -i '/exit 0/i ip link set dev eth1 txqueuelen 10000' package/base-files/files/etc/rc.local
+# 设置 TTYd 免密登录（可选，为了方便）
+sed -i 's/\/bin\/login/\/bin\/login -f root/g' feeds/luci/applications/luci-app-ttyd/root/etc/config/ttyd

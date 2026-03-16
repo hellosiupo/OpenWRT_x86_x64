@@ -189,4 +189,43 @@ CONFIG_PACKAGE_luci-app-sqm=y
 CONFIG_PACKAGE_sqm-scripts=y
 # 推荐加上 cake 调度器（目前公认最强）
 CONFIG_PACKAGE_kmod-sched-cake=y
+# ==========================================
+# 1. 极致底层加密与 TLS 加速 (适配 i9 SSE2)
+# ==========================================
+CONFIG_LIBCURL_COOKIES=y
+CONFIG_LIBCURL_CRYPTO_AUTH=y
+CONFIG_LIBCURL_NGHTTP2=y
+CONFIG_LIBCURL_OPENSSL=y
+CONFIG_LIBCURL_UNIX_SOCKETS=y
+CONFIG_MBEDTLS_HAVE_SSE2=y
+CONFIG_MBEDTLS_SSL_PROTO_TLS1_3=y
+CONFIG_GNUTLS_ALPN=y
+CONFIG_GNUTLS_OCSP=y
+
+# ==========================================
+# 2. 核心 Cgroup 优化 (让 Docker 跑得更稳)
+# ==========================================
+CONFIG_KERNEL_CGROUP_DEVICE=y
+CONFIG_KERNEL_CGROUP_FREEZER=y
+CONFIG_KERNEL_CGROUP_NET_PRIO=y
+CONFIG_KERNEL_NET_CLS_CGROUP=y
+CONFIG_KERNEL_PAGE_POOL=y
+CONFIG_PACKAGE_cgroupfs-mount=y
+
+# ==========================================
+# 3. 5G/4G 工业模组全家桶 (备用链路支持)
+# ==========================================
+CONFIG_PACKAGE_luci-proto-qmi=y
+CONFIG_PACKAGE_luci-proto-mbim=y
+CONFIG_PACKAGE_luci-proto-quectel=y
+CONFIG_PACKAGE_kmod-usb-net-qmi-wwan=y
+CONFIG_PACKAGE_kmod-usb-net-cdc-mbim=y
+CONFIG_PACKAGE_quectel-CM-5G=y
+CONFIG_PACKAGE_modemmanager=y
+
+# ==========================================
+# 5. 编译性能提升
+# ==========================================
+CONFIG_USE_LLVM_BUILD=y
+CONFIG_ZSTD_OPTIMIZE_O3=y
 

@@ -46,5 +46,7 @@ EOF
 sed -i '/exit 0/i ip link set dev eth0 txqueuelen 10000' package/base-files/files/etc/rc.local
 sed -i '/exit 0/i ip link set dev eth1 txqueuelen 10000' package/base-files/files/etc/rc.local
 
-# 6. 设置 TTYd 免密登录
-sed -i 's/\/bin\/login/\/bin\/login -f root/g' feeds/luci/applications/luci-app-ttyd/root/etc/config/ttyd
+# 只有在文件存在时才执行修改，防止报错中断编译
+if [ -f "feeds/luci/applications/luci-app-ttyd/root/etc/config/ttyd" ]; then
+    sed -i 's/login/0/g' feeds/luci/applications/luci-app-ttyd/root/etc/config/ttyd
+fi

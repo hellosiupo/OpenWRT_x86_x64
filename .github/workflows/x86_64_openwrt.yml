@@ -50,31 +50,33 @@ jobs:
         ./scripts/feeds install -a
 
     - name: Load DIY scripts & Config
+      # 【核心修复】必须在 openwrt 目录下运行，否则 Part1 脚本找不到 package 文件夹
+      working-directory: ./openwrt
       run: |
-        chmod +x $OPENWRT_NAME/*.sh || true
+        chmod +x ../$OPENWRT_NAME/*.sh || true
         # 执行 Part 1 脚本
         [ -f "$GITHUB_WORKSPACE/$DIY_P1_SH" ] && $GITHUB_WORKSPACE/$DIY_P1_SH
         # 加载 配置文件
-        [ -e "$CONFIG_FILE" ] && cat "$CONFIG_FILE" > openwrt/.config
+        [ -e "$GITHUB_WORKSPACE/$CONFIG_FILE" ] && cat "$GITHUB_WORKSPACE/$CONFIG_FILE" > .config
         # 执行 Part 2 脚本
         [ -f "$GITHUB_WORKSPACE/$DIY_P2_SH" ] && $GITHUB_WORKSPACE/$DIY_P2_SH
 
     - name: Download the installation package
       id: package
+      working-directory: ./openwrt
       run: |
-        cd openwrt
         make defconfig
-        echo "正在以 2 线程下载包..."
-        make download -j2
+        echo "正在下载依赖包..."
+        make download -j3
         find dl -size -1024c -exec rm -f {} \;
               
     - name: Compile the firmware
       id: compile
+      working-directory: ./openwrt
       run: |
-        cd openwrt
-        echo -e "检测到 3C6G 环境，正在以 2 线程安全模式编译..."
-        # 使用 -j2 编译，如果失败自动转为 -j1 打印详细日志
-        make -j2 || make -j1 V=s
+        # 既然你有 4 核 EPYC 和 8G RAM + 8G Swap，用 3 线程既快又稳
+        echo -e "正在以 3 线程安全模式编译..."
+        make -j3 || make -j1 V=s
         echo "date1=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
         echo "date2=$(date '+%Y.%m.%d-%H%M')" >> $GITHUB_ENV
         echo "status=success" >> $GITHUB_OUTPUT
@@ -104,4 +106,4 @@ jobs:
         files: ${{ env.FIRMWARE }}/*
         name: ${{ env.OPENWRT_NAME }}_${{ env.OPENWRT_NAME1 }}_${{ env.date1 }}
         tag_name: ${{ env.date2 }}
-        body: "📥 固件基于 3C6G 环境（2线程）编译完成"
+        body: "📥 固件基于 AMD EPYC (3线程) 编译完成。"
